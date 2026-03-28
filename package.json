@@ -1,0 +1,15 @@
+{
+  "name": "vidumurai-root",
+  "version": "1.0.0",
+  "description": "Root package for Vidumurai LMS",
+  "scripts": {
+    "install-all": "npm install && cd server && npm install && cd ../client-react && npm install && cd ../client-angular && npm install",
+    "start": "concurrently \"npm run server\" \"npm run react\" \"npm run angular\"",
+    "server": "cd server && npm run dev",
+    "react": "cd client-react && npm run dev",
+    "angular": "cd client-angular && npm start"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
