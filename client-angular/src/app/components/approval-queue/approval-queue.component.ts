@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,7 @@ import { AuthService } from '../../services/auth.service';
       </div>
 
       <mat-card class="table-card elevation-z2" style="border-radius: 12px; overflow: hidden;">
-        <table mat-table [dataSource]="getActiveLeaves()" class="full-width-table">
+        <table mat-table [dataSource]="activeLeaves()" class="full-width-table">
           
           <ng-container matColumnDef="applicant">
             <th mat-header-cell *matHeaderCellDef> Applicant </th>
@@ -117,14 +117,12 @@ export class ApprovalQueueComponent implements OnInit {
   authService = inject(AuthService);
   displayedColumns: string[] = ['applicant', 'dates', 'reason', 'ai_tag', 'status', 'actions'];
 
+  activeLeaves = computed(() => {
+    return this.leaveService.leaves().filter(l => l.status === 'Pending' || l.status === 'HOD_Approved');
+  });
+
   ngOnInit() {
     this.leaveService.fetchLeaves();
-  }
-
-  getActiveLeaves() {
-     // Filter out Final_Approved or Rejected older leaves if we only want active queue.
-     // For this assignment, displaying everything inside the reactive signal:
-     return this.leaveService.leaves().filter(l => l.status === 'Pending' || l.status === 'HOD_Approved');
   }
 
   getTagColor(tag: string): string {
