@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,7 @@ import { AuthService } from '../../services/auth.service';
       </div>
 
       <mat-card class="table-card elevation-z2" style="border-radius: 12px; overflow: hidden;">
-        <table mat-table [dataSource]="activeLeaves()" class="full-width-table">
+        <table mat-table [dataSource]="getActiveLeaves()" class="full-width-table">
           
           <ng-container matColumnDef="applicant">
             <th mat-header-cell *matHeaderCellDef> Applicant </th>
@@ -48,7 +48,7 @@ import { AuthService } from '../../services/auth.service';
             <th mat-header-cell *matHeaderCellDef> AI Insight </th>
             <td mat-cell *matCellDef="let leave"> 
               <mat-chip-set>
-                <mat-chip [color]="getTagColor(leave.recommendationTag)" selected>
+                <mat-chip class="custom-chip" [ngClass]="getTagClass(leave.recommendationTag)">
                    <mat-icon *ngIf="leave.recommendationTag === 'High Load'" style="margin-right: -4px; margin-left: -5px; transform: scale(0.8);">warning</mat-icon>
                    <mat-icon *ngIf="leave.recommendationTag === 'Risky'" style="margin-right: -4px; margin-left: -5px; transform: scale(0.8);">error_outline</mat-icon>
                    <mat-icon *ngIf="leave.recommendationTag === 'Safe'" style="margin-right: -4px; margin-left: -5px; transform: scale(0.8);">check_circle</mat-icon>
@@ -110,6 +110,11 @@ import { AuthService } from '../../services/auth.service';
     .HOD_Approved { background-color: #e3f2fd; color: #1565c0; border: 1px solid #90caf9;}
     .Final_Approved { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;}
     .Rejected { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a;}
+
+    .custom-chip { font-weight: 500 !important; }
+    .chip-warn { background-color: #fce4e4 !important; color: #c62828 !important; border: 1px solid #ef9a9a !important; }
+    .chip-accent { background-color: #fff3e0 !important; color: #e65100 !important; border: 1px solid #ffcc80 !important; }
+    .chip-primary { background-color: #e8eaf6 !important; color: #283593 !important; border: 1px solid #9fa8da !important; }
   `]
 })
 export class ApprovalQueueComponent implements OnInit {
@@ -117,19 +122,19 @@ export class ApprovalQueueComponent implements OnInit {
   authService = inject(AuthService);
   displayedColumns: string[] = ['applicant', 'dates', 'reason', 'ai_tag', 'status', 'actions'];
 
-  activeLeaves = computed(() => {
-    return this.leaveService.leaves().filter(l => l.status === 'Pending' || l.status === 'HOD_Approved');
-  });
-
   ngOnInit() {
     this.leaveService.fetchLeaves();
   }
 
-  getTagColor(tag: string): string {
+  getActiveLeaves() {
+     return this.leaveService.leaves().filter(l => l.status === 'Pending' || l.status === 'HOD_Approved');
+  }
+
+  getTagClass(tag: string): string {
     switch (tag) {
-      case 'High Load': return 'warn';
-      case 'Risky': return 'accent';
-      case 'Safe': return 'primary';
+      case 'High Load': return 'chip-warn';
+      case 'Risky': return 'chip-accent';
+      case 'Safe': return 'chip-primary';
       default: return '';
     }
   }
@@ -137,11 +142,8 @@ export class ApprovalQueueComponent implements OnInit {
   canApprove(leave: any): boolean {
     const role = this.authService.currentUser()?.role;
     if (!role) return false;
-    // Workflow Rule 3: Students/Staff -> HOD -> Admin. 
-    // If HOD logs in, they can approve "Pending".
-    if (role === 'HOD' && leave.status === 'Pending') return true;
     
-    // If Admin logs in, they can approve "HOD_Approved" to turn it Final. Or if they can directly approve pending.
+    if (role === 'HOD' && leave.status === 'Pending') return true;
     if (role === 'Admin' && (leave.status === 'Pending' || leave.status === 'HOD_Approved')) return true;
     
     return false;
@@ -151,10 +153,7 @@ export class ApprovalQueueComponent implements OnInit {
     const role = this.authService.currentUser()?.role;
     let nextStatus = 'Final_Approved';
     
-    // Flow logic mappings
     if (role === 'HOD' && leave.status === 'Pending') nextStatus = 'HOD_Approved';
-    // If Admin approves HOD_Approved it goes to Final_Approved (defaulted above)
-    // We update the REST API which emits signals to reload the queue seamlessly
     this.leaveService.updateLeaveStatus(leave._id, nextStatus).subscribe();
   }
 
