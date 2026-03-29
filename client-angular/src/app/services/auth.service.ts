@@ -7,7 +7,10 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000/api/auth';
+  // Uses window.location to determine if we are deployed to dynamically hit the right API
+  private apiUrl = window.location.hostname === 'localhost' 
+      ? 'http://localhost:5000/api/auth' 
+      : 'https://vidumurai-backend.onrender.com/api/auth'; // Fallback to a production Render URL
   
   currentUser = signal<any>(null);
   isAuthenticated = signal<boolean>(false);

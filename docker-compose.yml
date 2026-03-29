@@ -3,53 +3,57 @@ version: '3.8'
 services:
   mongodb:
     image: mongo:latest
-    container_name: leave_mongodb
+    container_name: vidumurai_mongodb
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
     networks:
-      - leave_network
+      - vidumurai_network
 
   backend:
     build:
       context: ./server
       dockerfile: Dockerfile
-    container_name: leave_backend
+    container_name: vidumurai_backend
     ports:
       - "5000:5000"
     environment:
       - PORT=5000
-      - MONGO_URI=mongodb://mongodb:27017/leave_management
+      - MONGO_URI=mongodb://mongodb:27017/vidumurai
       - JWT_SECRET=supersecret123
       - JWT_EXPIRE=30d
     depends_on:
       - mongodb
     networks:
-      - leave_network
+      - vidumurai_network
 
-  react-dashboard:
+  client-react:
     build:
-      context: ./client/react-dashboard
+      context: ./client-react
       dockerfile: Dockerfile
-    container_name: leave_react_dashboard
+    container_name: vidumurai_react
     ports:
       - "3000:80"
     networks:
-      - leave_network
+      - vidumurai_network
+    depends_on:
+      - backend
 
-  angular-portal:
+  client-angular:
     build:
-      context: ./client/angular-portal
+      context: ./client-angular
       dockerfile: Dockerfile
-    container_name: leave_angular_portal
+    container_name: vidumurai_angular
     ports:
       - "4200:80"
     networks:
-      - leave_network
+      - vidumurai_network
+    depends_on:
+      - backend
 
 networks:
-  leave_network:
+  vidumurai_network:
     driver: bridge
 
 volumes:

@@ -7,7 +7,7 @@ const errorHandler = require('./middleware/error');
 
 // Example backend update
 app.use(cors({
-    origin: ['https://vidumurai-react.vercel.app', 'https://vidumurai-angular.vercel.app']
+    origin: ['https://leavooo-react.vercel.app', 'https://vidumurai-angular.vercel.app']
 }));
 
 // Load env vars

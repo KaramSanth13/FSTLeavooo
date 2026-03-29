@@ -6,7 +6,9 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class LeaveService {
-  private apiUrl = 'http://localhost:5000/api/leaves';
+  private apiUrl = window.location.hostname === 'localhost' 
+      ? 'http://localhost:5000/api/leaves' 
+      : 'https://vidumurai-backend.onrender.com/api/leaves';
   
   // Real-time state utilizing Angular Signals
   leaves = signal<any[]>([]);
