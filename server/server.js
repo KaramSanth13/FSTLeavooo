@@ -4,10 +4,11 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const swaggerUi = require('swagger-ui-express');
 const errorHandler = require('./middleware/error');
+const app = express();
 
 // Example backend update
 app.use(cors({
-    origin: ['https://leavooo-react.vercel.app', 'https://vidumurai-angular.vercel.app']
+    origin: ['https://fst-leavooo-react.vercel.app', 'https://fst-leavooo-angular.vercel.app']
 }));
 
 // Load env vars
@@ -16,7 +17,6 @@ dotenv.config();
 // Connect to database
 connectDB();
 
-const app = express();
 
 // Body parser
 app.use(express.json());
