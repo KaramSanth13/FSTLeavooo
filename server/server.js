@@ -8,7 +8,7 @@ const app = express();
 
 // Example backend update
 app.use(cors({
-    origin: ['https://fst-leavooo-react.vercel.app', 'https://fst-leavooo-angular.vercel.app']
+    origin: ['http://localhost:4200','https://fst-leavooo-react.vercel.app', 'https://fst-leavooo-angular.vercel.app']
 }));
 
 // Load env vars
@@ -22,7 +22,6 @@ connectDB();
 app.use(express.json());
 
 // Enable CORS
-app.use(cors());
 
 // Swagger Docs setup
 const swaggerDocument = {
