@@ -8,7 +8,7 @@ import { tap } from 'rxjs/operators';
 export class LeaveService {
   private apiUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:5000/api/leaves' 
-      : 'https://leavooo-backend-api.onrender.com/api/leaves';
+      : 'https://fstleavooo-production.up.railway.app/api/leaves';
   
   // Real-time state utilizing Angular Signals
   leaves = signal<any[]>([]);

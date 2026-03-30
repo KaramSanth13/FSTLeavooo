@@ -56,16 +56,13 @@ const swaggerDocument = {
     },
     servers: [
         {
-            // This ensures Swagger works locally AND on Render
             url: process.env.NODE_ENV === 'production' 
-                ? 'https://leavooo-backend-api.onrender.com' // Replace with your actual Render URL later
+                ? 'https://fstleavooo-production.up.railway.app' 
                 : 'http://localhost:5000',
             description: 'API Server'
         }
     ],
-    paths: {
-        // We will add paths here later
-    }
+    paths: {}
 };
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
