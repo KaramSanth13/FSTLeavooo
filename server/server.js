@@ -47,20 +47,17 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
-        
-        // Allow any Vercel deployment dynamically, OR exact matches in the array
-        if (origin.endsWith('.vercel.app') || allowedOrigins.indexOf(origin) !== -1) {
+        if (origin.endsWith('.vercel.app') || origin.includes('localhost') || allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
-            console.log('CORS blocked this origin:', origin); // Helps with debugging!
+            console.warn(`🛑 CORS Blocked origin: ${origin}`);
             callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow all methods
-    allowedHeaders: ['Content-Type', 'Authorization'] // Explicitly allow your headers
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // MUST ADD THIS: Catch the invisible preflight requests

@@ -1,9 +1,11 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // Point to the Railway production URL by default if no environment variable is provided
-  baseURL: import.meta.env.VITE_API_URL || 'https://fstleavooo-production.up.railway.app/api',
+  // Tries VITE_API_URL, then VITE_API_BASE_URL, then falls back to production railway URL
+  baseURL: import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'https://fstleavooo-production.up.railway.app/api',
 });
+
+console.log('📡 Leavooo API configured at:', api.defaults.baseURL);
 
 api.interceptors.request.use(
   (config) => {
