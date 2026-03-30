@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const LeaveRequest = require('../models/Leave');
+const { logAction } = require('./stats');
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -143,6 +145,51 @@ exports.deleteUser = async (req, res, next) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Seed database with sample data
+// @route   POST /api/auth/seed
+// @access  Public (Temporary for setup)
+exports.seedDB = async (req, res, next) => {
+  try {
+    const users = [
+      { name: 'Admin User', email: 'admin@ceg.in', password: 'password123', role: 'Admin', leaveBalance: 20 },
+      { name: 'HOD CSE', email: 'hod@hod.cse.ceg.in', password: 'password123', role: 'HOD', leaveBalance: 15 },
+      { name: 'Karam Santh N', email: 'karam@student.ceg.in', password: 'password123', role: 'Student', leaveBalance: 10 },
+      { name: 'Shanjana G', email: 'shanjana@student.ceg.in', password: 'password123', role: 'Student', leaveBalance: 8 }
+    ];
+
+    await User.deleteMany();
+    await LeaveRequest.deleteMany();
+    
+    const createdUsers = await User.create(users);
+    const student = createdUsers.find(u => u.role === 'Student');
+
+    if (student) {
+      const sampleLeaves = [
+        {
+          userId: student._id,
+          startDate: new Date(),
+          endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+          reason: 'Attend Symposium at CEG',
+          status: 'Pending'
+        },
+        {
+          userId: student._id,
+          startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          endDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+          reason: 'Family Emergency',
+          status: 'Final_Approved',
+          medicalCertificate: true
+        }
+      ];
+      await LeaveRequest.create(sampleLeaves);
+    }
+
+    res.status(200).json({ success: true, message: 'Database seeded successfully!' });
   } catch (err) {
     next(err);
   }

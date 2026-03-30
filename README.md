@@ -2,28 +2,29 @@
 
 Leavooo is a production-ready, full-stack Leave and Approval Management System. It features a hybrid frontend architecture optimized for different user roles and an AI-driven backend engine for risk assessment and auditing.
 
-## 🚀 Key Features
+## 🌟 Core Features Showcase
 
-### Backend Engine (Node.js/Express)
-1.  **Audit Logs**: Comprehensive tracking of every status transition and profile change.
-2.  **Advanced Analytics**: Deep insights into leave trends by month, reason, and department.
-3.  **Medical Certificate Logic**: Automated enforcement of attachment requirements for leaves > 3 days.
-4.  **Profile Management API**: Secure password hashing and personal detail updates.
-5.  **User Management Admin API**: Full control over user lifecycle (List/Delete/Promote).
+### 🛠️ Advanced Backend Engine
+-   **Multi-Tier Approval System**: Robust hierarchical logic enforcing the workflow: **Student -> HOD -> Admin**.
+-   **Dynamic Role Engine**: Automated role assignment based on CEG.IN email subdomains (e.g., `@hod.cse.ceg.in`).
+-   **Audit Trail & Logging**: Every status transition is captured with a timestamp and the actor's identity for transparency.
+-   **Institutional Analytics**: aggregated reporting using MongoDB pipelines to track monthly trends and leave reasons.
+-   **Smart Conflict Detection**: AI-based tagging (High Load/Risky) to alert approvers about concurrent institutional absences.
 
-### Applicant Portal (React/Vite)
-1.  **Circular Leave Balance UI**: Real-time visual tracking of remaining leave days.
-2.  **Notification System**: Instant alerts for leave status updates (Approved/Rejected).
-3.  **Profile Settings**: Dedicated interface for managing credentials and personal info.
-4.  **Medical Cert Mock Upload**: Integrated validation for long-duration leave requests.
-5.  **Portal Switcher**: Seamless cross-navigation between Applicant and Approver portals.
+### 🎓 Applicant Portal (React)
+-   **State-of-the-Art Dashboard**: Features high-end **Circular Balance Charts** for instant visual feedback on leave quotas.
+-   **Live Notification Center**: A functional, interactive dropdown tracking approval outcomes and policy updates.
+-   **Medical Attachment Logic**: Mandatory flag enforcement for long-duration leave requests (>3 days).
+-   **Adaptive UX**: Full support for **Dark/Light Mode** with persistence via LocalStorage.
+-   **Profile Control Center**: Dedicated settings for credential management and data verification.
 
-### Approver Portal (Angular/Material)
-1.  **Bulk Approval/Rejection**: Process dozens of requests with a single click.
-2.  **Advanced Filtering**: Multi-criteria search (Reason/Priority/Applicant) for efficient queueing.
-3.  **Management Dashboard**: Visualized stats and bar charts for institution-wide trends.
-4.  **User Management CRUD**: Centralized administrator dashboard for adding/removing users.
-5.  **System Settings**: Configurable AI thresholds and institutional workflow policies.
+### 🛡️ Approver Portal (Angular)
+-   **Enterprise Bulk Operations**: Capability to process tens of leave requests simultaneously with batch checkboxes.
+-   **Real-Time Monitoring**: Data-rich tables with multi-criteria **Filtering and Full-Text Search**.
+-   **Visual Management Dashboard**: Responsive bar charts summarizing institutional attendance patterns.
+-   **Administrator User Matrix**: Full Lifecycle management (CRUD) of all system users.
+-   **System Threshold Control**: Dynamic configuration of AI risk parameters (e.g., concurrent leave limits).
+
 
 ## 🛠️ Tech Stack
 -   **Frontend (Admin/Staff)**: Angular 17+, Material UI, RxJS, **Angular Signals**.
