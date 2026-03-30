@@ -1,5 +1,5 @@
 const express = require('express');
-const { register, login, getMe, updateDetails, updatePassword, getUsers, deleteUser, seedDB } = require('../controllers/auth');
+const { register, login, getMe, updateDetails, updatePassword, getUsers, deleteUser } = require('../controllers/auth');
 const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
@@ -9,7 +9,6 @@ router.post('/login', login);
 router.get('/me', protect, getMe);
 router.put('/updatedetails', protect, updateDetails);
 router.put('/updatepassword', protect, updatePassword);
-router.post('/seed', seedDB);
 
 router.route('/users')
   .get(protect, authorize('Admin'), getUsers);

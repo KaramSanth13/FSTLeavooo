@@ -26,11 +26,8 @@ const Header = () => {
 
   return (
     <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700 h-16 flex items-center justify-between px-6 transition-colors no-print">
-      <div className="flex items-center space-x-3">
-        <div className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Leavooo Logo" className="w-8 h-8 text-indigo-600" />
-          <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">Leavooo</h2>
-        </div>
+      <div className="flex items-center space-x-4">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Leavooo</h2>
         {(user?.role === 'Admin' || user?.role === 'HOD') && (
           <a 
             href="http://localhost:4200" 

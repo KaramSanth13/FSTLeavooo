@@ -14,7 +14,7 @@ import { AuthService } from './services/auth.service';
   template: `
     <mat-toolbar class="main-toolbar" *ngIf="authService.isAuthenticated()">
       <div class="logo-section">
-        <img src="assets/logo.svg" alt="Leavooo Logo" class="logo-img" />
+        <mat-icon class="logo-icon">verified_user</mat-icon>
         <span class="logo-text">Leavooo Admin</span>
       </div>
       
@@ -59,7 +59,7 @@ import { AuthService } from './services/auth.service';
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .logo-section { display: flex; align-items: center; margin-right: 48px; }
-    .logo-img { margin-right: 12px; height: 32px; width: 32px; filter: invert(56%) sepia(87%) saturate(2855%) hue-rotate(218deg) brightness(101%) contrast(97%); } /* indigo-400 color */
+    .logo-icon { margin-right: 12px; color: #818cf8; font-size: 28px; width: 28px; height: 28px; }
     .logo-text { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
     
     .nav-links { display: flex; gap: 8px; }

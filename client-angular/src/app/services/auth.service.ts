@@ -10,7 +10,7 @@ export class AuthService {
   // Uses window.location to determine if we are deployed to dynamically hit the right API
   private apiUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:5000/api/auth' 
-      : 'https://leavooo-backend-production.up.railway.app/api/auth'; // Replace with your Railway URL
+      : 'https://leavooo-backend-api.onrender.com/api/auth'; // Fallback to a production Render URL
   
   currentUser = signal<any>(null);
   isAuthenticated = signal<boolean>(false);
@@ -20,8 +20,13 @@ export class AuthService {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     if (token && user) {
-      this.currentUser.set(JSON.parse(user));
-      this.isAuthenticated.set(true);
+      try {
+        this.currentUser.set(JSON.parse(user));
+        this.isAuthenticated.set(true);
+      } catch (e) {
+        console.error('Failed to parse user from storage:', e);
+        this.logout(); // Clear invalid data
+      }
     }
   }
 

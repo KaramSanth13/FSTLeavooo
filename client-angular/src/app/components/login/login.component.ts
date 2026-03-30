@@ -75,11 +75,7 @@ export class LoginComponent {
       },
       error: (err) => {
          this.loading = false;
-         if (err.status === 0) {
-           this.error = 'Network Error: Cannot reach the backend. Check your Railway URL or CORS settings.';
-         } else {
-           this.error = err.error?.error || err.message || 'Login failed. Please check your credentials.';
-         }
+         this.error = err.message || err.error?.error || 'Login failed';
       }
     });
   }

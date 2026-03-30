@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { LeaveService } from '../../services/leave.service';
 import { AuthService } from '../../services/auth.service';
+import { HighlightRiskDirective } from '../../directives/highlight-risk.directive';
 
 @Component({
   selector: 'app-approval-queue',
@@ -29,7 +30,8 @@ import { AuthService } from '../../services/auth.service';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    HighlightRiskDirective
   ],
   template: `
     <div class="container elevation-z8">
@@ -141,7 +143,9 @@ import { AuthService } from '../../services/auth.service';
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="['select', 'applicant', 'dates', 'reason', 'ai_tag', 'actions']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['select', 'applicant', 'dates', 'reason', 'ai_tag', 'actions'];" class="element-row"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['select', 'applicant', 'dates', 'reason', 'ai_tag', 'actions'];" 
+              class="element-row"
+              [appHighlightRisk]="row.recommendationTag"></tr>
         </table>
       </mat-card>
       
