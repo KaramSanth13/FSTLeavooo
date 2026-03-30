@@ -93,13 +93,18 @@ const swaggerDocument = {
 };
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Route files
-const auth = require('./routes/auth');
-const leave = require('./routes/leave');
+// Health check and root API route
+app.get('/api', (req, res) => {
+    res.json({ success: true, message: 'Leavooo API is LIVE and reachabale! 🚀' });
+});
 
-// Mount routers
+// Import original routes
+const auth = require('./routes/auth');
+const leaves = require('./routes/leave');
+
+// 4. Mount Original Routes
 app.use('/api/auth', auth);
-app.use('/api/leaves', leave);
+app.use('/api/leaves', leaves);
 
 // Error handler middleware
 app.use(errorHandler);
