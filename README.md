@@ -69,6 +69,9 @@ Leavooo is a production-ready, full-stack Leave and Approval Management System. 
 -   **HOD**: `hod@hod.cse.ceg.in` / `password123`
 -   **Student**: `karam@student.ceg.in` / `password123`
 
+> [!WARNING]
+> **Production Connectivity**: Ensure you update the `apiUrl` in `AuthService.ts` (Angular) and `api.js` (React) to match your **actual Railway URL**. The current ones are placeholders.
+
 ---
 *Built with ❤️ for FST Leavooo.*
 

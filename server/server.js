@@ -15,17 +15,11 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// 2. Enable CORS (Only ONCE, with all your environments)
+// 2. Enable CORS (Liberal for deployment ease - allows all origins)
 app.use(cors({
-    origin: [
-        'http://localhost:4200',                 // Angular Local
-        'http://localhost:5173',                 // React Local (Vite)
-        'http://localhost:3000',                 // React Local
-        /\.vercel\.app$/,                        // All Vercel Deployments
-        'https://fst-leavooo-react.vercel.app',  // React Live
-        'https://fst-leavooo-angular.vercel.app' // Angular Live
-    ],
-    credentials: true 
+    origin: '*',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
 // 3. Swagger Docs setup (Dynamic URLs)
