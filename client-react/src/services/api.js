@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // Tries VITE_API_URL, then VITE_API_BASE_URL, then falls back to production railway URL
-  baseURL: import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'https://fstleavooo-production.up.railway.app/api',
+  // Hardcoded production URL for Vercel to override any misconfigured environment variables
+  baseURL: window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api' 
+    : 'https://fstleavooo-production.up.railway.app/api',
 });
 
 console.log('📡 Leavooo API configured at:', api.defaults.baseURL);

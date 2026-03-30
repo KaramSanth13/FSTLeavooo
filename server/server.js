@@ -12,9 +12,9 @@ connectDB();
 
 const app = express();
 
-// Auto-seed admin user if none exists
+// Auto-seed admin and student if none exists
 const User = require('./models/User');
-const seedAdmin = async () => {
+const seedData = async () => {
     try {
         const adminCount = await User.countDocuments({ role: 'Admin' });
         if (adminCount === 0) {
@@ -26,11 +26,21 @@ const seedAdmin = async () => {
             });
             console.log('✅ Default admin created: admin@ceg.in / password123');
         }
+        const studentCount = await User.countDocuments({ role: 'Student' });
+        if (studentCount === 0) {
+            await User.create({
+                name: 'Test Student',
+                email: 'student@student.ceg.in',
+                password: 'password123',
+                role: 'Student'
+            });
+            console.log('✅ Default student created: student@student.ceg.in / password123');
+        }
     } catch (err) {
         console.error('❌ Auto-seed failed:', err.message);
     }
 };
-seedAdmin();
+seedData();
 
 // Body parser
 app.use(express.json());
