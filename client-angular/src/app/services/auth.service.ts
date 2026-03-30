@@ -20,13 +20,8 @@ export class AuthService {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     if (token && user) {
-      try {
-        this.currentUser.set(JSON.parse(user));
-        this.isAuthenticated.set(true);
-      } catch (e) {
-        console.error('Failed to parse user from storage:', e);
-        this.logout(); // Clear invalid data
-      }
+      this.currentUser.set(JSON.parse(user));
+      this.isAuthenticated.set(true);
     }
   }
 

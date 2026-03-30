@@ -5,12 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
-import { BalanceStatusPipe } from '../../pipes/balance-status.pipe';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, BalanceStatusPipe],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule],
   template: `
     <div class="container elevation-z8">
       <div class="header">
@@ -40,10 +39,7 @@ import { BalanceStatusPipe } from '../../pipes/balance-status.pipe';
 
         <ng-container matColumnDef="balance">
           <th mat-header-cell *matHeaderCellDef> Balance </th>
-          <td mat-cell *matCellDef="let u"> 
-             {{ u.leaveBalance }} days 
-             <span class="balance-tag" [ngClass]="u.leaveBalance | balanceStatus">{{ u.leaveBalance | balanceStatus }}</span>
-          </td>
+          <td mat-cell *matCellDef="let u"> {{ u.leaveBalance }} </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -76,10 +72,6 @@ import { BalanceStatusPipe } from '../../pipes/balance-status.pipe';
     .HOD { background: #e0f2fe; color: #075985; }
     .Staff { background: #fef3c7; color: #92400e; }
     .Student { background: #f3f4f6; color: #374151; }
-    .balance-tag { margin-left: 8px; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; color: white; text-transform: uppercase;}
-    .Critical { background: #dc2626; }
-    .Low { background: #f59e0b; }
-    .Healthy { background: #16a34a; }
   `]
 })
 export class UserManagementComponent implements OnInit {

@@ -28,19 +28,10 @@ Leavooo is a production-ready, full-stack Leave and Approval Management System. 
 ## 🛠️ Tech Stack
 -   **Frontend (Admin/Staff)**: Angular 17+, Material UI, RxJS, Signals.
 -   **Frontend (Students)**: React 18+, Tailwind CSS, Lucide Icons, Context API.
--   **Node.js/Express Backend**: Clean MVC architecture with JWT auth and MongoDB.
--   **React Applicant Portal**: Modern UI/UX with circular progress and skeleton loaders.
--   **Angular Approver Portal**: Enterprise-grade management dashboard.
+-   **Backend**: Node.js, Express, JWT, Mongoose, MongoDB.
+-   **Deployment**: Render (Server), Vercel (React/Angular).
 
-## 🚀 Angular Unique Features (Approver Portal)
-The Angular stack leverages modern features (v17.3+) to provide a high-performance experience:
-1.  **Angular Signals**: Used in `AuthService` and `LeaveService` for fine-grained, reactive state management without unnecessary change detection cycles.
-2.  **Standalone Components**: Modern architecture where every component manages its own imports (e.g., `MatTableModule`, `MatIconModule`), reducing bundle size.
-3.  **Functional Interceptors**: implemented `authInterceptor` to dynamically inject JWT tokens into every outgoing API request.
-4.  **Custom Attribute Directives**: `HighlightRiskDirective` automatically applies professional styling to table rows based on AI-calculated risk tags.
-5.  **Custom Transformation Pipes**: `BalanceStatusPipe` transforms raw numeric data into human-readable, color-coded health statuses (Critical/Low/Healthy).
-
-## 🛠️ Local Setup
+## 💻 Local Setup
 1.  Clone the repository.
 2.  Create `.env` in `server/`:
     ```env
