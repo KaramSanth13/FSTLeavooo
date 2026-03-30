@@ -16,17 +16,35 @@ const app = express();
 app.use(express.json());
 
 // 2. Enable CORS (Only ONCE, with all your environments)
+// 2. Enable CORS (Bulletproof Configuration)
+const allowedOrigins = [
+    'http://localhost:4200',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://fst-leavooo-react.vercel.app',
+    'https://fst-leavooo-angular.vercel.app'
+];
+
 app.use(cors({
-    origin: [
-        'http://localhost:4200',                 // Angular Local
-        'http://localhost:5173',                 // React Local (Vite)
-        'http://localhost:3000',                 // React Local
-        /\.vercel\.app$/,                        // All Vercel Deployments
-        'https://fst-leavooo-react.vercel.app',  // React Live
-        'https://fst-leavooo-angular.vercel.app' // Angular Live
-    ],
-    credentials: true 
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        // Allow any Vercel deployment dynamically, OR exact matches in the array
+        if (origin.endsWith('.vercel.app') || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked this origin:', origin); // Helps with debugging!
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow all methods
+    allowedHeaders: ['Content-Type', 'Authorization'] // Explicitly allow your headers
 }));
+
+// MUST ADD THIS: Catch the invisible preflight requests
+app.options('*', cors());
 
 // 3. Swagger Docs setup (Dynamic URLs)
 const swaggerDocument = {
