@@ -12,6 +12,26 @@ connectDB();
 
 const app = express();
 
+// Auto-seed admin user if none exists
+const User = require('./models/User');
+const seedAdmin = async () => {
+    try {
+        const adminCount = await User.countDocuments({ role: 'Admin' });
+        if (adminCount === 0) {
+            await User.create({
+                name: 'System Admin',
+                email: 'admin@ceg.in',
+                password: 'password123',
+                role: 'Admin'
+            });
+            console.log('✅ Default admin created: admin@ceg.in / password123');
+        }
+    } catch (err) {
+        console.error('❌ Auto-seed failed:', err.message);
+    }
+};
+seedAdmin();
+
 // Body parser
 app.use(express.json());
 

@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // Allows setting VITE_API_URL during Vercel/Render deployments. Defaults to local backend.
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  // Point to the Railway production URL by default if no environment variable is provided
+  baseURL: import.meta.env.VITE_API_URL || 'https://fstleavooo-production.up.railway.app/api',
 });
 
 api.interceptors.request.use(
