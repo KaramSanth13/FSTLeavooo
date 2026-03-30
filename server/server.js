@@ -17,11 +17,14 @@ app.use(express.json());
 
 // 2. Enable CORS (Liberal for deployment ease - allows all origins)
 app.use(cors({
-    origin: '*',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+    origin: [
+        'http://localhost:4200',
+        'http://localhost:5173',
+        'https://fst-leavooo-react.vercel.app',  // Make sure this is your EXACT Vercel URL
+        'https://fst-leavooo-angular.vercel.app' // Make sure this is your EXACT Vercel URL
+    ],
+    credentials: true
 }));
-
 // 3. Swagger Docs setup (Dynamic URLs)
 const swaggerDocument = {
     openapi: '3.0.0',
