@@ -29,7 +29,7 @@ Leavooo is a production-ready, full-stack Leave and Approval Management System. 
 -   **Frontend (Admin/Staff)**: Angular 17+, Material UI, RxJS, Signals.
 -   **Frontend (Students)**: React 18+, Tailwind CSS, Lucide Icons, Context API.
 -   **Backend**: Node.js, Express, JWT, Mongoose, MongoDB.
--   **Deployment**: Render (Server), Vercel (React/Angular).
+-   **Deployment**: Railway (Backend), Vercel (React/Angular).
 
 ## 💻 Local Setup
 1.  Clone the repository.

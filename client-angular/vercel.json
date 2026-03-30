@@ -1,5 +1,5 @@
 {
-  "outputDirectory": "dist/client-angular/browser",
+  "outputDirectory": "dist/browser",
   "rewrites": [
     {
       "source": "/(.*)",

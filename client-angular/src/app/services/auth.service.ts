@@ -10,7 +10,7 @@ export class AuthService {
   // Uses window.location to determine if we are deployed to dynamically hit the right API
   private apiUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:5000/api/auth' 
-      : 'https://leavooo-backend-api.onrender.com/api/auth'; // Fallback to a production Render URL
+      : 'https://leavooo-backend.up.railway.app/api/auth'; // Updated for Railway Deployment
   
   currentUser = signal<any>(null);
   isAuthenticated = signal<boolean>(false);

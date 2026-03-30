@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Moon, Sun, User, Bell, ExternalLink, Settings } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import Logo from './Logo';
 
 const Header = () => {
   const { user } = useContext(AuthContext);
@@ -27,7 +28,7 @@ const Header = () => {
   return (
     <header className="bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700 h-16 flex items-center justify-between px-6 transition-colors no-print">
       <div className="flex items-center space-x-4">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Leavooo</h2>
+        <Logo />
         {(user?.role === 'Admin' || user?.role === 'HOD') && (
           <a 
             href="http://localhost:4200" 
