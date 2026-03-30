@@ -26,10 +26,27 @@ Leavooo is a production-ready, full-stack Leave and Approval Management System. 
 5.  **System Settings**: Configurable AI thresholds and institutional workflow policies.
 
 ## 🛠️ Tech Stack
--   **Frontend (Admin/Staff)**: Angular 17+, Material UI, RxJS, Signals.
--   **Frontend (Students)**: React 18+, Tailwind CSS, Lucide Icons, Context API.
+-   **Frontend (Admin/Staff)**: Angular 17+, Material UI, RxJS, **Angular Signals**.
+-   **Frontend (Students)**: React 18+, Tailwind CSS, Lucide Icons, **Context API**.
 -   **Backend**: Node.js, Express, JWT, Mongoose, MongoDB.
--   **Deployment**: Railway (Backend), Vercel (React/Angular).
+-   **Deployment**: **Railway** (Server), Vercel (React/Angular).
+
+## 🧩 Technical Implementation
+
+### React Applicant Portal
+-   **useState()**: Managed local UI states such as `darkMode` toggles, notification dropdown visibility, and form input buffering.
+-   **useEffect()**: Synchronized application state with `localStorage` and handled API polling for real-time leave status updates.
+-   **useContext()**: Centralized authentication state across the entire component tree via `AuthContext`.
+
+### Angular Approver Portal
+-   **Signals**: Leveraged `signal<any[]>` for highly efficient, fine-grained reactivity when managing the approval queue and user lists.
+-   **Standalone Components**: Optimized bundle size and developer experience using modern Angular 17 architecture.
+-   **Material Data Tables**: Implemented `MatTableDataSource` for real-time filtering and sorting of leave applications.
+
+### Backend & Security
+-   **JWT Strategy**: Implemented stateless authentication with custom `protect` middleware for role-based access control.
+-   **Mongoose Aggregations**: Calculated complex institutional analytics using MongoDB's `$group` and `$trend` pipelines.
+-   **Railway Deployment**: Configured Dockerized backend deployment for automatic scaling and CI/CD.
 
 ## 💻 Local Setup
 1.  Clone the repository.

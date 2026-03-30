@@ -14,13 +14,8 @@ import { AuthService } from './services/auth.service';
   template: `
     <mat-toolbar class="main-toolbar" *ngIf="authService.isAuthenticated()">
       <div class="logo-section">
-        <div class="brand-logo">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7 14L10 17L17 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 3L4 7V12C4 17 12 21 12 21C12 21 20 17 20 12V7L12 3Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <span class="logo-text">Leavooo</span>
+        <img src="assets/logo.svg" alt="Leavooo Logo" class="logo-img" />
+        <span class="logo-text">Leavooo Admin</span>
       </div>
       
       <div class="nav-links">
@@ -63,14 +58,9 @@ import { AuthService } from './services/auth.service';
       align-items: center;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    .logo-section { display: flex; align-items: center; margin-right: 48px; gap: 10px; }
-    .brand-logo { 
-      width: 36px; height: 36px; background: #4f46e5; border-radius: 10px; 
-      display: flex; align-items: center; justify-content: center; color: white;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-    }
-    .brand-logo svg { width: 20px; height: 20px; }
-    .logo-text { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: white; }
+    .logo-section { display: flex; align-items: center; margin-right: 48px; }
+    .logo-img { margin-right: 12px; height: 32px; width: 32px; filter: invert(56%) sepia(87%) saturate(2855%) hue-rotate(218deg) brightness(101%) contrast(97%); } /* indigo-400 color */
+    .logo-text { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
     
     .nav-links { display: flex; gap: 8px; }
     .nav-links a { 
