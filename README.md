@@ -1,46 +1,57 @@
+# Leavooo - Enterprise Leave Management System
 
-# FSTLeavooo
-Leavooo - Leave And Approval Management System
+Leavooo is a production-ready, full-stack Leave and Approval Management System. It features a hybrid frontend architecture optimized for different user roles and an AI-driven backend engine for risk assessment and auditing.
 
-# Vidumurai - Leave & Approval Management System
+## 🚀 Key Features
 
-This repository contains completely decoupled React Applicant Portal, Angular Approver Portal, and a Node.js Backend Engine.
+### Backend Engine (Node.js/Express)
+1.  **Audit Logs**: Comprehensive tracking of every status transition and profile change.
+2.  **Advanced Analytics**: Deep insights into leave trends by month, reason, and department.
+3.  **Medical Certificate Logic**: Automated enforcement of attachment requirements for leaves > 3 days.
+4.  **Profile Management API**: Secure password hashing and personal detail updates.
+5.  **User Management Admin API**: Full control over user lifecycle (List/Delete/Promote).
 
-## Setup Configuration
-Create a `.env` file in the `server/` directory:
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/vidumurai
-JWT_SECRET=supersecret123
-JWT_EXPIRE=30d
-```
+### Applicant Portal (React/Vite)
+1.  **Circular Leave Balance UI**: Real-time visual tracking of remaining leave days.
+2.  **Notification System**: Instant alerts for leave status updates (Approved/Rejected).
+3.  **Profile Settings**: Dedicated interface for managing credentials and personal info.
+4.  **Medical Cert Mock Upload**: Integrated validation for long-duration leave requests.
+5.  **Portal Switcher**: Seamless cross-navigation between Applicant and Approver portals.
 
-## Running Locally
-At the root folder:
-1. `npm run install-all`
-2. `cd server && npm run seed`  (to populate users)
-3. `npm start` (Runs Node server, React App, Angular App concurrently)
+### Approver Portal (Angular/Material)
+1.  **Bulk Approval/Rejection**: Process dozens of requests with a single click.
+2.  **Advanced Filtering**: Multi-criteria search (Reason/Priority/Applicant) for efficient queueing.
+3.  **Management Dashboard**: Visualized stats and bar charts for institution-wide trends.
+4.  **User Management CRUD**: Centralized administrator dashboard for adding/removing users.
+5.  **System Settings**: Configurable AI thresholds and institutional workflow policies.
 
-## Deployment
+## 🛠️ Tech Stack
+-   **Frontend (Admin/Staff)**: Angular 17+, Material UI, RxJS, Signals.
+-   **Frontend (Students)**: React 18+, Tailwind CSS, Lucide Icons, Context API.
+-   **Backend**: Node.js, Express, JWT, Mongoose, MongoDB.
+-   **Deployment**: Render (Server), Vercel (React/Angular).
 
-### MongoDB Atlas
-1. Create a cluster on MongoDB Atlas.
-2. In Network Access, allow IPs `0.0.0.0/0`.
-3. In Database Access, create a user and copy the connection string. Replace your local `MONGO_URI` with this.
+## 💻 Local Setup
+1.  Clone the repository.
+2.  Create `.env` in `server/`:
+    ```env
+    PORT=5000
+    MONGO_URI=your_mongodb_atlas_uri
+    JWT_SECRET=your_jwt_secret
+    JWT_EXPIRE=30d
+    ```
+3.  Install & Run:
+    ```bash
+    npm run install-all
+    cd server && npm run seed  # Populate initial accounts
+    npm start                  # Concurrently start all 3 projects
+    ```
 
-### Render (Backend)
-1. Add `server/` folder to Render as a Web Service.
-2. Build Command: `npm install`
-3. Start Command: `npm start`
-4. Add Environment Variables: `PORT`, `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRE`
+## 🔒 Test Credentials (Updated)
+-   **Admin**: `admin@ceg.in` / `password123`
+-   **HOD**: `hod@hod.cse.ceg.in` / `password123`
+-   **Student**: `karam@student.ceg.in` / `password123`
 
-### Vercel (React Frontend)
-1. Import repository to Vercel and set Root Directory to `client-react`.
-2. Framework: Vite. Build Command: `npm run build`.
-3. Set environment variable pointing to Render Backend URL if necessary. Deploy.
-
-### Netlify (Angular Frontend)
-1. Import repository to Netlify and set Base Directory to `client-angular`.
-2. Build Command: `npm run build`. Publish directory: `client-angular/dist/client-angular/browser`.
-3. Set environment variable pointing to Backend URL. Deploy.
+---
+*Built with ❤️ for FST Leavooo.*
 

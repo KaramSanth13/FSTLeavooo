@@ -10,10 +10,11 @@ export class AuthService {
   // Uses window.location to determine if we are deployed to dynamically hit the right API
   private apiUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:5000/api/auth' 
-      : 'https://vidumurai-backend.onrender.com/api/auth'; // Fallback to a production Render URL
+      : 'https://leavooo-backend-api.onrender.com/api/auth'; // Fallback to a production Render URL
   
   currentUser = signal<any>(null);
   isAuthenticated = signal<boolean>(false);
+  users = signal<any[]>([]);
 
   constructor(private http: HttpClient, private router: Router) {
     const token = localStorage.getItem('token');
@@ -45,5 +46,17 @@ export class AuthService {
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
     this.router.navigate(['/login']);
+  }
+
+  fetchAllUsers() {
+    this.http.get<any>(`${this.apiUrl}/users`).subscribe(res => {
+      this.users.set(res.data);
+    });
+  }
+
+  deleteUser(id: string) {
+    return this.http.delete(`${this.apiUrl}/users/${id}`).pipe(
+      tap(() => this.fetchAllUsers())
+    );
   }
 }

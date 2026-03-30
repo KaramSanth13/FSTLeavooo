@@ -1,7 +1,7 @@
 {
-  "name": "vidumurai-root",
+  "name": "leavooo-root",
   "version": "1.0.0",
-  "description": "Root package for Vidumurai LMS",
+  "description": "Root package for Leavooo LMS",
   "scripts": {
     "install-all": "npm install && cd server && npm install && cd ../client-react && npm install && cd ../client-angular && npm install",
     "start": "concurrently \"npm run server\" \"npm run react\" \"npm run angular\"",
@@ -10,6 +10,7 @@
     "angular": "cd client-angular && npm start"
   },
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "dotenv": "^17.3.1"
   }
 }

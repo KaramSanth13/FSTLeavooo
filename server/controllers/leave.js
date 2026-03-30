@@ -1,5 +1,6 @@
 const LeaveRequest = require('../models/Leave');
 const User = require('../models/User');
+const { logAction } = require('./stats');
 
 // @desc    Get all leaves (Approvers see all, Users see own)
 // @route   GET /api/leaves
@@ -71,6 +72,19 @@ exports.createLeave = async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Please provide startDate, endDate and reason' });
     }
 
+    // Rule: Medical certificate required for leaves > 3 days
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    if (diffDays > 3 && !req.body.medicalCertificate) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Medical certificate is required for leaves longer than 3 days.' 
+      });
+    }
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -85,7 +99,12 @@ exports.createLeave = async (req, res, next) => {
       return res.status(403).json({ success: false, error: 'Cannot apply: You currently have an active leave.' });
     }
 
+
     const leave = await LeaveRequest.create(req.body);
+    
+    // Log creation
+    await logAction(leave._id, req.user.id, 'Created', null, 'Pending', 'Initial application');
+
     res.status(201).json({ success: true, data: leave });
   } catch (err) {
     next(err);
@@ -119,12 +138,15 @@ exports.modifyLeaveEndDate = async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'End Date cannot be before Start Date' });
     }
 
+    const oldStatus = leave.status;
     leave.endDate = new Date(endDate);
-    // Restart workflow depending on business logic, but assignment says "ONLY the endDate"
-    // We can reset status to pending for re-approval or keep it depending on system. Let's keep status or reset to Pending.
     leave.status = 'Pending';
     
     await leave.save();
+
+    // Log modification
+    await logAction(leave._id, req.user.id, 'Modified', oldStatus, 'Pending', `Extended end date to ${endDate}`);
+
     res.status(200).json({ success: true, data: leave });
   } catch (err) {
     next(err);
@@ -146,8 +168,12 @@ exports.updateLeave = async (req, res, next) => {
        return res.status(403).json({ success: false, error: 'HODs cannot give Final approval directly.'});
     }
 
+    const oldStatus = leave.status;
     leave.status = status;
     await leave.save();
+
+    // Log update
+    await logAction(leave._id, req.user.id, status, oldStatus, status, `Status changed by ${req.user.role}`);
 
     // Reduce balance on final approval
     if (status === 'Final_Approved') {

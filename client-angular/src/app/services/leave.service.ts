@@ -8,10 +8,11 @@ import { tap } from 'rxjs/operators';
 export class LeaveService {
   private apiUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:5000/api/leaves' 
-      : 'https://vidumurai-backend.onrender.com/api/leaves';
+      : 'https://leavooo-backend-api.onrender.com/api/leaves';
   
   // Real-time state utilizing Angular Signals
   leaves = signal<any[]>([]);
+  stats = signal<any>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -19,6 +20,16 @@ export class LeaveService {
     this.http.get<any>(this.apiUrl).subscribe(data => {
       this.leaves.set(data.data);
     });
+  }
+
+  fetchStats() {
+    this.http.get<any>(`${this.apiUrl}/stats/summary`).subscribe(data => {
+      this.stats.set(data.data);
+    });
+  }
+
+  getStats() {
+    return this.http.get<any>(`${this.apiUrl}/stats/summary`);
   }
 
   updateLeaveStatus(id: string, status: string) {

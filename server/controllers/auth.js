@@ -7,18 +7,18 @@ exports.register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    // Dynamic Role Assignment Rules via email domain pattern matching
-    let role = 'Student'; // default fallback
+    // Dynamic Role Assignment Rules via email domain pattern matching (CEG.IN Syntax)
+    let role = 'Student'; 
     const domain = email.split('@')[1];
 
-    if (domain === 'student.collegename.edu') {
-      role = 'Student';
-    } else if (domain === 'staff.collegename.edu') {
-      role = 'Staff';
-    } else if (email === 'hod@collegename.edu') {
-      role = 'HOD';
-    } else if (email === 'admin@collegename.edu' || domain === 'collegename.edu') {
+    if (email === 'admin@ceg.in') {
       role = 'Admin';
+    } else if (domain === 'student.ceg.in') {
+      role = 'Student';
+    } else if (domain && domain.startsWith('hod.') && domain.endsWith('.ceg.in')) {
+      role = 'HOD';
+    } else if (domain === 'staff.ceg.in') {
+      role = 'Staff';
     }
 
     // Create user
@@ -74,6 +74,75 @@ exports.getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
     res.status(200).json({ success: true, data: user });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Update password
+// @route   PUT /api/auth/updatepassword
+// @access  Private
+exports.updatePassword = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select('+password');
+
+    // Check current password
+    if (!(await user.matchPassword(req.body.currentPassword))) {
+      return res.status(401).json({ success: false, error: 'Current password is incorrect' });
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    sendTokenResponse(user, 200, res);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Update user details
+// @route   PUT /api/auth/updatedetails
+// @access  Private
+exports.updateDetails = async (req, res, next) => {
+  try {
+    const fieldsToUpdate = {
+      name: req.body.name,
+      email: req.body.email
+    };
+
+    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+      new: true,
+      runValidators: true
+    });
+
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Get all users
+// @route   GET /api/auth/users
+// @access  Private/Admin
+exports.getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({ success: true, data: users });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Delete user
+// @route   DELETE /api/auth/users/:id
+// @access  Private/Admin
+exports.deleteUser = async (req, res, next) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, data: {} });
   } catch (err) {
     next(err);
   }

@@ -18,6 +18,14 @@ const LeaveSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a reason']
   },
+  medicalCertificate: {
+    type: Boolean,
+    default: false
+  },
+  attachmentUrl: {
+    type: String,
+    default: ''
+  },
   status: {
     type: String,
     enum: ['Pending', 'HOD_Approved', 'Final_Approved', 'Rejected'],

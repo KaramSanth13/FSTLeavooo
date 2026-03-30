@@ -21,7 +21,7 @@ const Sidebar = () => {
     <aside className="w-64 bg-slate-900 text-white min-h-screen flex flex-col transition-colors no-print">
       <div className="h-16 flex items-center px-6 border-b border-slate-700">
         <CheckSquare className="text-indigo-500 mr-3" size={24} />
-        <h1 className="text-xl font-bold tracking-wider">LMS<span className="text-indigo-500">Sync</span></h1>
+        <h1 className="text-xl font-bold tracking-wider">Leavooo</h1>
       </div>
 
       <nav className="flex-1 px-4 py-8 space-y-2">

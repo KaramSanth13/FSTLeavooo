@@ -19,14 +19,14 @@ import { AuthService } from '../../services/auth.service';
         <mat-card-header>
           <div mat-card-avatar class="header-icon"><mat-icon color="primary" style="font-size: 40px; width: 40px; height: 40px;">admin_panel_settings</mat-icon></div>
           <mat-card-title style="margin-left: 10px; margin-top: 5px;">Approver Portal Login</mat-card-title>
-          <mat-card-subtitle style="margin-left: 10px;">Vidumurai Admin/HOD Only</mat-card-subtitle>
+          <mat-card-subtitle style="margin-left: 10px;">Leavooo Admin/HOD Only</mat-card-subtitle>
         </mat-card-header>
         
         <mat-card-content style="margin-top: 30px;">
           <form (ngSubmit)="onSubmit()">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Email Address</mat-label>
-              <input matInput [(ngModel)]="email" name="email" required placeholder="admin@collegename.edu">
+              <input matInput [(ngModel)]="email" name="email" required placeholder="admin@ceg.in">
               <mat-icon matSuffix>email</mat-icon>
             </mat-form-field>
             <mat-form-field appearance="outline" class="full-width" style="margin-top: 10px;">

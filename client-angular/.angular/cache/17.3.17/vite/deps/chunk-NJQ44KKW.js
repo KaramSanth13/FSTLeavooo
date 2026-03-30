@@ -316,6 +316,7 @@ var ENTER = 13;
 var SHIFT = 16;
 var CONTROL = 17;
 var ALT = 18;
+var ESCAPE = 27;
 var SPACE = 32;
 var PAGE_UP = 33;
 var PAGE_DOWN = 34;
@@ -351,6 +352,12 @@ function _isNumberValue(value) {
 }
 function coerceArray(value) {
   return Array.isArray(value) ? value : [value];
+}
+function coerceCssPixelValue(value) {
+  if (value == null) {
+    return "";
+  }
+  return typeof value === "string" ? value : `${value}px`;
 }
 function coerceElement(elementOrRef) {
   return elementOrRef instanceof ElementRef ? elementOrRef.nativeElement : elementOrRef;
@@ -831,6 +838,22 @@ var BreakpointObserver = class _BreakpointObserver {
 function splitQueries(queries) {
   return queries.map((query) => query.split(",")).reduce((a1, a2) => a1.concat(a2)).map((query) => query.trim());
 }
+var Breakpoints = {
+  XSmall: "(max-width: 599.98px)",
+  Small: "(min-width: 600px) and (max-width: 959.98px)",
+  Medium: "(min-width: 960px) and (max-width: 1279.98px)",
+  Large: "(min-width: 1280px) and (max-width: 1919.98px)",
+  XLarge: "(min-width: 1920px)",
+  Handset: "(max-width: 599.98px) and (orientation: portrait), (max-width: 959.98px) and (orientation: landscape)",
+  Tablet: "(min-width: 600px) and (max-width: 839.98px) and (orientation: portrait), (min-width: 960px) and (max-width: 1279.98px) and (orientation: landscape)",
+  Web: "(min-width: 840px) and (orientation: portrait), (min-width: 1280px) and (orientation: landscape)",
+  HandsetPortrait: "(max-width: 599.98px) and (orientation: portrait)",
+  TabletPortrait: "(min-width: 600px) and (max-width: 839.98px) and (orientation: portrait)",
+  WebPortrait: "(min-width: 840px) and (orientation: portrait)",
+  HandsetLandscape: "(max-width: 959.98px) and (orientation: landscape)",
+  TabletLandscape: "(min-width: 960px) and (max-width: 1279.98px) and (orientation: landscape)",
+  WebLandscape: "(min-width: 1280px) and (orientation: landscape)"
+};
 
 // node_modules/@angular/cdk/fesm2022/a11y.mjs
 var ID_DELIMITER = " ";
@@ -1373,6 +1396,17 @@ var ListKeyManager = class {
       if (newIndex > -1 && newIndex !== this._activeItemIndex) {
         this._activeItemIndex = newIndex;
       }
+    }
+  }
+};
+var ActiveDescendantKeyManager = class extends ListKeyManager {
+  setActiveItem(index) {
+    if (this.activeItem) {
+      this.activeItem.setInactiveStyles();
+    }
+    super.setActiveItem(index);
+    if (this.activeItem) {
+      this.activeItem.setActiveStyles();
     }
   }
 };
@@ -3306,6 +3340,74 @@ function _checkCdkVersionMatch() {
     console.warn("The Angular Material version (" + VERSION2.full + ") does not match the Angular CDK version (" + VERSION.full + ").\nPlease ensure the versions of these two packages exactly match.");
   }
 }
+function mixinDisabled(base) {
+  return class extends base {
+    get disabled() {
+      return this._disabled;
+    }
+    set disabled(value) {
+      this._disabled = coerceBooleanProperty(value);
+    }
+    constructor(...args) {
+      super(...args);
+      this._disabled = false;
+    }
+  };
+}
+function mixinColor(base, defaultColor) {
+  return class extends base {
+    get color() {
+      return this._color;
+    }
+    set color(value) {
+      const colorPalette = value || this.defaultColor;
+      if (colorPalette !== this._color) {
+        if (this._color) {
+          this._elementRef.nativeElement.classList.remove(`mat-${this._color}`);
+        }
+        if (colorPalette) {
+          this._elementRef.nativeElement.classList.add(`mat-${colorPalette}`);
+        }
+        this._color = colorPalette;
+      }
+    }
+    constructor(...args) {
+      super(...args);
+      this.defaultColor = defaultColor;
+      this.color = defaultColor;
+    }
+  };
+}
+function mixinDisableRipple(base) {
+  return class extends base {
+    /** Whether the ripple effect is disabled or not. */
+    get disableRipple() {
+      return this._disableRipple;
+    }
+    set disableRipple(value) {
+      this._disableRipple = coerceBooleanProperty(value);
+    }
+    constructor(...args) {
+      super(...args);
+      this._disableRipple = false;
+    }
+  };
+}
+function mixinTabIndex(base, defaultTabIndex = 0) {
+  return class extends base {
+    get tabIndex() {
+      return this.disabled ? -1 : this._tabIndex;
+    }
+    set tabIndex(value) {
+      this._tabIndex = value != null ? coerceNumberProperty(value) : this.defaultTabIndex;
+    }
+    constructor(...args) {
+      super(...args);
+      this._tabIndex = defaultTabIndex;
+      this.defaultTabIndex = defaultTabIndex;
+    }
+  };
+}
 var _ErrorStateTracker = class {
   constructor(_defaultMatcher, ngControl, _parentFormGroup, _parentForm, _stateChanges) {
     this._defaultMatcher = _defaultMatcher;
@@ -3328,6 +3430,71 @@ var _ErrorStateTracker = class {
     }
   }
 };
+function mixinErrorState(base) {
+  return class extends base {
+    /** Whether the component is in an error state. */
+    get errorState() {
+      return this._getTracker().errorState;
+    }
+    set errorState(value) {
+      this._getTracker().errorState = value;
+    }
+    /** An object used to control the error state of the component. */
+    get errorStateMatcher() {
+      return this._getTracker().matcher;
+    }
+    set errorStateMatcher(value) {
+      this._getTracker().matcher = value;
+    }
+    /** Updates the error state based on the provided error state matcher. */
+    updateErrorState() {
+      this._getTracker().updateErrorState();
+    }
+    _getTracker() {
+      if (!this._tracker) {
+        this._tracker = new _ErrorStateTracker(this._defaultErrorStateMatcher, this.ngControl, this._parentFormGroup, this._parentForm, this.stateChanges);
+      }
+      return this._tracker;
+    }
+    constructor(...args) {
+      super(...args);
+    }
+  };
+}
+function mixinInitialized(base) {
+  return class extends base {
+    constructor(...args) {
+      super(...args);
+      this._isInitialized = false;
+      this._pendingSubscribers = [];
+      this.initialized = new Observable((subscriber) => {
+        if (this._isInitialized) {
+          this._notifySubscriber(subscriber);
+        } else {
+          this._pendingSubscribers.push(subscriber);
+        }
+      });
+    }
+    /**
+     * Marks the state as initialized and notifies pending subscribers. Should be called at the end
+     * of ngOnInit.
+     * @docs-private
+     */
+    _markInitialized() {
+      if (this._isInitialized && (typeof ngDevMode === "undefined" || ngDevMode)) {
+        throw Error("This directive has already been marked as initialized and should not be called twice.");
+      }
+      this._isInitialized = true;
+      this._pendingSubscribers.forEach(this._notifySubscriber);
+      this._pendingSubscribers = null;
+    }
+    /** Emits and completes the subscriber stream (should only emit once). */
+    _notifySubscriber(subscriber) {
+      subscriber.next();
+      subscriber.complete();
+    }
+  };
+}
 var MAT_DATE_LOCALE = new InjectionToken("MAT_DATE_LOCALE", {
   providedIn: "root",
   factory: MAT_DATE_LOCALE_FACTORY
@@ -3788,6 +3955,23 @@ var MatLine = class _MatLine {
     }]
   }], null, null);
 })();
+function setLines(lines, element, prefix = "mat") {
+  lines.changes.pipe(startWith(lines)).subscribe(({
+    length
+  }) => {
+    setClass(element, `${prefix}-2-line`, false);
+    setClass(element, `${prefix}-3-line`, false);
+    setClass(element, `${prefix}-multi-line`, false);
+    if (length === 2 || length === 3) {
+      setClass(element, `${prefix}-${length}-line`, true);
+    } else if (length > 3) {
+      setClass(element, `${prefix}-multi-line`, true);
+    }
+  });
+}
+function setClass(element, className, isAdd) {
+  element.nativeElement.classList.toggle(className, isAdd);
+}
 var MatLineModule = class _MatLineModule {
   static {
     this.ɵfac = function MatLineModule_Factory(t) {
@@ -4902,6 +5086,29 @@ var MatOption = class _MatOption {
     }]
   });
 })();
+function _countGroupLabelsBeforeOption(optionIndex, options, optionGroups) {
+  if (optionGroups.length) {
+    let optionsArray = options.toArray();
+    let groups = optionGroups.toArray();
+    let groupCounter = 0;
+    for (let i = 0; i < optionIndex + 1; i++) {
+      if (optionsArray[i].group && optionsArray[i].group === groups[groupCounter]) {
+        groupCounter++;
+      }
+    }
+    return groupCounter;
+  }
+  return 0;
+}
+function _getOptionScrollPosition(optionOffset, optionHeight, currentScrollPosition, panelHeight) {
+  if (optionOffset < currentScrollPosition) {
+    return optionOffset;
+  }
+  if (optionOffset + optionHeight > currentScrollPosition + panelHeight) {
+    return Math.max(0, optionOffset - panelHeight + optionHeight);
+  }
+  return currentScrollPosition;
+}
 var MatOptionModule = class _MatOptionModule {
   static {
     this.ɵfac = function MatOptionModule_Factory(t) {
@@ -5136,26 +5343,85 @@ export {
   RtlScrollAxisType,
   supportsScrollBehavior,
   getRtlScrollAxisType,
+  _getEventTarget,
+  _isTestEnvironment,
   BACKSPACE,
   TAB,
   ENTER,
+  ESCAPE,
   SPACE,
+  LEFT_ARROW,
+  UP_ARROW,
+  RIGHT_ARROW,
+  DOWN_ARROW,
   DELETE,
+  A,
   hasModifierKey,
   coerceBooleanProperty,
   coerceNumberProperty,
   _isNumberValue,
+  coerceArray,
+  coerceCssPixelValue,
   coerceElement,
   ObserversModule,
+  BreakpointObserver,
+  Breakpoints,
+  addAriaReferencedId,
+  removeAriaReferencedId,
+  AriaDescriber,
+  ActiveDescendantKeyManager,
   FocusKeyManager,
+  isFakeMousedownFromScreenReader,
+  isFakeTouchstartFromScreenReader,
+  LiveAnnouncer,
   FocusMonitor,
+  A11yModule,
   Directionality,
   BidiModule,
+  VERSION2 as VERSION,
+  AnimationCurves,
+  AnimationDurations,
+  MATERIAL_SANITY_CHECKS,
   MatCommonModule,
+  mixinDisabled,
+  mixinColor,
+  mixinDisableRipple,
+  mixinTabIndex,
   _ErrorStateTracker,
+  mixinErrorState,
+  mixinInitialized,
+  MAT_DATE_LOCALE,
+  MAT_DATE_LOCALE_FACTORY,
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  NativeDateAdapter,
+  MAT_NATIVE_DATE_FORMATS,
+  NativeDateModule,
+  MatNativeDateModule,
+  provideNativeDateAdapter,
+  ShowOnDirtyErrorStateMatcher,
   ErrorStateMatcher,
+  MatLine,
+  setLines,
+  MatLineModule,
+  RippleState,
+  RippleRef,
+  defaultRippleAnimationConfig,
+  RippleRenderer,
   MAT_RIPPLE_GLOBAL_OPTIONS,
+  MatRipple,
   MatRippleModule,
-  MatRippleLoader
+  MatPseudoCheckbox,
+  MatPseudoCheckboxModule,
+  MAT_OPTION_PARENT_COMPONENT,
+  MAT_OPTGROUP,
+  MatOptgroup,
+  MatOptionSelectionChange,
+  MatOption,
+  _countGroupLabelsBeforeOption,
+  _getOptionScrollPosition,
+  MatOptionModule,
+  MatRippleLoader,
+  _MatInternalFormField
 };
-//# sourceMappingURL=chunk-YGWBR3FU.js.map
+//# sourceMappingURL=chunk-NJQ44KKW.js.map

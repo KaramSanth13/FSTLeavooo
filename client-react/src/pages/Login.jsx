@@ -36,7 +36,7 @@ const Login = () => {
           <div className="w-16 h-16 bg-indigo-600 rounded-2xl shadow-lg flex items-center justify-center mb-4">
             <CheckSquare size={32} className="text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white text-center">Applicant Portal</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white text-center">Leavooo Portal</h2>
           <p className="text-sm text-gray-500 dark:text-slate-400 text-center mt-2">Sign in to apply and track leaves</p>
         </div>
 
@@ -54,7 +54,7 @@ const Login = () => {
                 type="email"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition dark:placeholder-slate-400 shadow-sm"
-                placeholder="karam@student.collegename.edu"
+                placeholder="studentname@student.ceg.in"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -66,7 +66,7 @@ const Login = () => {
                 type="password"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition dark:placeholder-slate-400 shadow-sm"
-                placeholder="password123"
+                placeholder="Your secure password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

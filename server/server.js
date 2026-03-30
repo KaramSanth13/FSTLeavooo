@@ -20,10 +20,12 @@ app.use(cors({
     origin: [
         'http://localhost:4200',                 // Angular Local
         'http://localhost:5173',                 // React Local (Vite)
+        'http://localhost:3000',                 // React Local
+        /\.vercel\.app$/,                        // All Vercel Deployments
         'https://fst-leavooo-react.vercel.app',  // React Live
         'https://fst-leavooo-angular.vercel.app' // Angular Live
     ],
-    credentials: true // Important if you ever use cookies/sessions
+    credentials: true 
 }));
 
 // 3. Swagger Docs setup (Dynamic URLs)

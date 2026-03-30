@@ -1,7 +1,58 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { 
+  Calendar, Clock, CheckCircle2, XCircle, AlertCircle, 
+  ChevronRight, Download, Printer, Edit3, Loader2, Info, CalendarRange
+} from 'lucide-react';
 import { LeaveContext } from '../context/LeaveContext';
 import { AuthContext } from '../context/AuthContext';
-import { Clock, CheckCircle2, XCircle, Printer, CalendarRange } from 'lucide-react';
+
+const CircularProgress = ({ value, max, label, color }) => {
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (value / max) * circumference;
+  
+  return (
+    <div className="relative flex items-center justify-center">
+      <svg className="w-24 h-24 transform -rotate-90">
+        <circle
+          cx="48"
+          cy="48"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="8"
+          fill="transparent"
+          className="text-gray-100 dark:text-slate-700"
+        />
+        <circle
+          cx="48"
+          cy="48"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="8"
+          fill="transparent"
+          strokeDasharray={circumference}
+          style={{ strokeDashoffset: offset, transition: 'stroke-dashoffset 0.5s ease' }}
+          className={color}
+        />
+      </svg>
+      <div className="absolute text-center">
+        <span className="text-xl font-bold text-gray-800 dark:text-white">{value}</span>
+        <p className="text-[10px] text-gray-500 uppercase font-medium">{label}</p>
+      </div>
+    </div>
+  );
+};
+
+const Skeleton = () => (
+  <div className="animate-pulse space-y-4">
+    <div className="h-40 bg-gray-200 dark:bg-slate-700 rounded-2xl w-full"></div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="h-32 bg-gray-200 dark:bg-slate-700 rounded-2xl"></div>
+      <div className="h-32 bg-gray-200 dark:bg-slate-700 rounded-2xl"></div>
+      <div className="h-32 bg-gray-200 dark:bg-slate-700 rounded-2xl"></div>
+    </div>
+  </div>
+);
 
 const Dashboard = () => {
   const { leaves, loading, fetchLeaves, modifyEndDate } = useContext(LeaveContext);
@@ -42,16 +93,14 @@ const Dashboard = () => {
   };
 
   const renderTimeline = (status) => {
-    // Pipeline: Applied -> HOD -> Admin
     const stages = ['Applied', 'HOD_Approved', 'Final_Approved'];
     let currentStageIndex = 0;
     if (status === 'HOD_Approved') currentStageIndex = 1;
     if (status === 'Final_Approved') currentStageIndex = 2;
-    if (status === 'Rejected') currentStageIndex = -1; // special case handled via color
+    if (status === 'Rejected') currentStageIndex = -1;
 
     return (
       <div className="flex items-center justify-between mt-4 relative no-print">
-        {/* Connection Line */}
         <div className="absolute top-3 w-full h-1 bg-gray-200 dark:bg-slate-700 left-0 right-0 z-0 rounded"></div>
         
         {['Applied', 'HOD Review', 'Admin Final'].map((label, idx) => {
@@ -100,6 +149,8 @@ const Dashboard = () => {
     return end >= today;
   };
 
+  if (loading) return <div className="max-w-7xl mx-auto p-6"><Skeleton /></div>;
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="no-print">
@@ -107,17 +158,41 @@ const Dashboard = () => {
         <p className="text-gray-500 dark:text-slate-400 border-b border-gray-200 dark:border-slate-700 pb-4 mb-4">View your timeline, modify active leaves, or print gate passes.</p>
       </div>
 
-      {loading ? (
-        <div className="space-y-4 no-print">
-           {[1, 2, 3].map(i => (
-             <div key={i} className="animate-pulse flex flex-col bg-white dark:bg-slate-800 p-6 rounded-2xl w-full h-32 border border-slate-200 dark:border-slate-700">
-                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4 mb-4"></div>
-                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-2"></div>
-                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
-             </div>
-           ))}
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 no-print">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Available Balance</p>
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-white">{user?.leaveBalance} Days</h3>
+            <p className="text-xs text-green-600 mt-1 flex items-center">
+              <Info size={12} className="mr-1" /> Reset annually
+            </p>
+          </div>
+          <CircularProgress value={user?.leaveBalance || 0} max={10} label="Left" color="text-indigo-600" />
         </div>
-      ) : leaves.length === 0 ? (
+
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Used Leaves</p>
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-white">{10 - (user?.leaveBalance || 0)} Days</h3>
+          </div>
+          <CircularProgress value={10 - (user?.leaveBalance || 0)} max={10} label="Used" color="text-amber-500" />
+        </div>
+
+        <div className="bg-indigo-600 p-6 rounded-2xl shadow-lg text-white flex flex-col justify-between">
+          <div>
+             <p className="text-indigo-100 text-sm font-medium mb-1">Active Status</p>
+             <h3 className="text-xl font-bold">
+               {leaves.length > 0 ? (leaves[0].status.replace('_', ' ')) : 'No Recent Leaves'}
+             </h3>
+          </div>
+          <div className="mt-4 flex items-center text-xs text-indigo-100 bg-white/10 w-fit px-2 py-1 rounded-md">
+            <Clock size={12} className="mr-1" /> Next reset in 240 days
+          </div>
+        </div>
+      </div>
+
+      {leaves.length === 0 ? (
         <div className="text-center py-10 bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 no-print">
           <p className="text-gray-500 dark:text-slate-400">No leave history found.</p>
         </div>
@@ -129,7 +204,6 @@ const Dashboard = () => {
             return (
               <div key={leave._id} className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-slate-700">
                 
-                {/* Print Context (Hidden on web, visible on print) */}
                 <div className="hidden print-only text-center border-2 border-black p-8 m-8 rounded-lg mt-12 mb-12 page-break-after">
                    <h1 className="text-3xl font-bold mb-4">Gate Pass / Leave Approval</h1>
                    <h2 className="text-xl mb-6">College Leave Administration</h2>

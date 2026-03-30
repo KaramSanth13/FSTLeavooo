@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LeaveContext } from '../context/LeaveContext';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, FileText, Upload, Send } from 'lucide-react';
 
 const ApplyLeave = () => {
   const { applyLeaveForm } = useContext(LeaveContext);
@@ -10,12 +10,22 @@ const ApplyLeave = () => {
   const [formData, setFormData] = useState({
     startDate: '',
     endDate: '',
-    reason: ''
+    reason: '',
+    medicalCertificate: false
   });
-
+  const [file, setFile] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const getDays = () => {
+    if (!formData.startDate || !formData.endDate) return 0;
+    const start = new Date(formData.startDate);
+    const end = new Date(formData.endDate);
+    const diffTime = Math.abs(end - start);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  };
+  const days = getDays();
 
   const validateForm = () => {
     const start = new Date(formData.startDate);
@@ -35,6 +45,9 @@ const ApplyLeave = () => {
     if (!formData.reason.trim() || formData.reason.length < 5) {
       return "Please provide a valid reason (min 5 characters).";
     }
+    if (days > 3 && !formData.medicalCertificate) {
+      return "Medical certificate is required for leaves longer than 3 days.";
+    }
     return null;
   };
 
@@ -51,11 +64,10 @@ const ApplyLeave = () => {
 
     setLoading(true);
     try {
-      await applyLeaveForm(formData);
+      await applyLeaveForm({ ...formData, file });
       setSuccess('Leave application submitted successfully!');
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err) {
-      // Backend handles lockout rule check and will return 403 error string here.
       setError(err.response?.data?.error || 'Error applying for leave.');
     } finally {
       setLoading(false);
@@ -114,24 +126,73 @@ const ApplyLeave = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Reason</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 flex items-center">
+                <FileText size={16} className="mr-2 text-indigo-500" /> Reason for Leave
+              </label>
               <textarea
                 name="reason"
                 value={formData.reason}
                 onChange={handleChange}
                 rows="4"
-                placeholder="Detailed reason..."
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition resize-none dark:placeholder-slate-400"
+                placeholder="Briefly explain your reason..."
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"
               ></textarea>
             </div>
+
+            {days > 3 && (
+              <div className="space-y-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl animate-in fade-in slide-in-from-top-1">
+                <div className="flex items-center space-x-2 text-amber-700 dark:text-amber-400 text-sm font-medium">
+                  <AlertCircle size={16} />
+                  <span>Medical Certificate Required (Leave {">"} 3 days)</span>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <input 
+                    type="checkbox" 
+                    id="medCert"
+                    checked={formData.medicalCertificate}
+                    onChange={(e) => setFormData({...formData, medicalCertificate: e.target.checked})}
+                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <label htmlFor="medCert" className="text-sm text-gray-700 dark:text-slate-300 cursor-pointer">
+                    I have attached a medical certificate
+                  </label>
+                </div>
+
+                <div className="relative">
+                  <input 
+                    type="file" 
+                    className="hidden" 
+                    id="file-upload" 
+                    onChange={(e) => setFile(e.target.files[0])}
+                  />
+                  <label 
+                    htmlFor="file-upload"
+                    className="flex items-center justify-center p-3 border-2 border-dashed border-amber-300 dark:border-amber-800 rounded-lg cursor-pointer hover:bg-amber-100/50 transition-colors"
+                  >
+                    <Upload size={18} className="mr-2 text-amber-600" />
+                    <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                      {file ? file.name : "Select PDF/Image"}
+                    </span>
+                  </label>
+                </div>
+              </div>
+            )}
 
             <div className="pt-4 border-t border-gray-100 dark:border-slate-700">
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg transition-all ${loading ? 'opacity-70 cursor-not-allowed' : 'active:scale-[0.98]'}`}
+                className="w-full bg-indigo-600 dark:bg-indigo-500 text-white font-semibold py-4 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all flex items-center justify-center space-x-2 active:scale-[0.98]"
               >
-                {loading ? 'Submitting...' : 'Submit Request'}
+                {loading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                ) : (
+                  <>
+                    <Send size={18} />
+                    <span>Submit Application</span>
+                  </>
+                )}
               </button>
             </div>
           </form>
