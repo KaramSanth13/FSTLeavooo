@@ -15,18 +15,14 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// 2. Enable CORS (Only ONCE, with all your environments)
+// 2. Enable CORS (Reflect origin for reliability)
 app.use(cors({
-    origin: [
-        'http://localhost:4200',                 // Angular Local
-        'http://localhost:5173',                 // React Local (Vite)
-        'http://localhost:3000',                 // React Local
-        /\.vercel\.app$/,                        // All Vercel Deployments
-        'https://fst-leavooo-react.vercel.app',  // React Live
-        'https://fst-leavooo-angular.vercel.app' // Angular Live
-    ],
+    origin: (origin, callback) => callback(null, true),
     credentials: true 
 }));
+
+// 2.5 Health Check
+app.get('/', (req, res) => res.status(200).json({ status: 'UP', message: 'Leavooo Backend Operational' }));
 
 // 3. Swagger Docs setup (Dynamic URLs)
 const swaggerDocument = {
